@@ -7,10 +7,9 @@ from .models import EventType, Event, Participant
 def main(request):
     search = request.GET.get('search')
 
-
     if search != "" and search != None:
         events = Event.objects.filter(event_participants__participant_mail=search)
-        participant = Participant.objects.get(participant_mail=search)
+        participant = Participant.objects.filter(participant_mail=search)
 
         print(participant)
 
