@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,17 +22,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-a5ohr_n*-5ac+!6@zz+@v6l#gmuai%w^*&_&6ffr2))g@^o@2t'
+SECRET_KEY = getenv("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv("DEBUG", True)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    getenv("APP_HOST"),
+    'localhost',
+    '127.0.0.1'
+]
 
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'certificator',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,10 +82,28 @@ WSGI_APPLICATION = 'certificatemanager.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
+IS_DEV = getenv("IS_DEV", True)
+
+if IS_DEV:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+else:
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        # MySQL settings use the name of the db not the path
+        'NAME': getenv('DB_NAME'),
+        # Name of MySQL user in CPanel
+        'USER': getenv('DB_USERNAME'),
+        # MySQL password
+        'PASSWORD': getenv('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -124,6 +148,12 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 
 ]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
