@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+# -*- coding: utf-8 -*-
+
 from pathlib import Path
 from os import getenv
 from django.core.management.utils import get_random_secret_key
@@ -96,17 +98,13 @@ else:
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # MySQL settings use the name of the db not the path
         'NAME': getenv('DB_NAME'),
-        # Name of MySQL user in CPanel
         'USER': getenv('DB_USERNAME'),
-        # MySQL password
         'PASSWORD': getenv('DB_PASSWORD'),
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
