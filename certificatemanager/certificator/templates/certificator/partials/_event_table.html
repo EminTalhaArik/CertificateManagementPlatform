@@ -1,0 +1,24 @@
+<div class="container col-10 bg-white border py-4 rounded mb-4 mt-4">
+  
+    <h3 class="text-center">Etkinliklerimiz</h3>
+    <hr>
+
+    <table class="table table-hover text-center">
+        <thead>
+          <tr>
+            <th scope="col">Etkinlik Adı</th>
+            <th scope="col">Etkinlik Tarihi</th>
+            <th scope="col">Etkinlik Türü</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.event_name }}</td>
+                    <td>{{ event.event_date }}</td>
+                    <td>{{ event.event_type.title }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>    
+</div>

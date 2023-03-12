@@ -1,0 +1,32 @@
+<div class="container col-10 bg-white border py-4 rounded mb-4 mt-4 table-responsive">
+
+    <h3 class="text-center">Katılınan Etkinlikler</h3>
+    <hr>
+
+    <table class="table table-hover text-center">
+        <thead>
+          <tr>
+            <th scope="col">İsim - Soyisim</th>
+            <th scope="col">Etkinlik Adı</th>
+            <th scope="col">Etkinlik Tarihi</th>
+            <th scope="col">Etkinlik Türü</th>
+            <th scope="col">Paylaş</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ participant.participant_name }}</td>
+                    <td>{{ event.event_name }}</td>
+                    <td>{{ event.event_date }}</td>
+                    <td>{{ event.event_type.title }}</td>
+                    <td>
+                      <a href="https://linkedin.com/share?text={{event.event_date}} tarihlerinde Teens In Innovation tarafından düzenlenen {{event.event_name}} etkinliğine katılım sağladığımı duyurmaktan mutluluk duyuyorum. Teşekkürler.">
+                        <i class="fa-brands fa-linkedin fa-2xl"></i>
+                      </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+</div>
