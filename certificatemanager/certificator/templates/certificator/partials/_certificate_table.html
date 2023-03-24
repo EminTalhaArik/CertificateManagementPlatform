@@ -11,6 +11,7 @@
             <th scope="col">Etkinlik Tarihi</th>
             <th scope="col">Etkinlik Türü</th>
             <th scope="col">Paylaş</th>
+            <th scope="col">Görüntüle</th>
           </tr>
         </thead>
         <tbody>
@@ -23,6 +24,11 @@
                     <td>
                       <a target="_blank" href="https://linkedin.com/share?text={{event.event_date}} tarihlerinde Teens In Innovation tarafından düzenlenen {{event.event_name}} etkinliğine katılım sağladığımı duyurmaktan mutluluk duyuyorum. Teşekkürler.">
                         <i class="fa-brands fa-linkedin fa-2xl"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <a target="_blank" href="/certificate?participant={{participant.0.participant_name}}&event={{event.event_name}}">
+                        görüntüleme linki
                       </a>
                     </td>
                 </tr>

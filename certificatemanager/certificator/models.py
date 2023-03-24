@@ -2,7 +2,10 @@ from django.db import models
 
 class Participant(models.Model):
     participant_name = models.CharField(max_length=200, null=False)
-    participant_mail = models.EmailField(max_length=254, null=False)
+    participant_mail = models.EmailField(max_length=254, null=False, unique=True)
+    
+    def save(self, force_insert=False, force_update=False):
+        self.participant_mail = self.participant_mail.lower()
     
     def __str__(self):
         return self.participant_name
