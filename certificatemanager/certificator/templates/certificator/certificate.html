@@ -4,12 +4,12 @@
 
     {% include 'certificator/partials/_search_area.html' %}
 
-    {% if events|length == 0 %}
+    {% if certificates|length == 0 %}
         <div class="d-flex align-items-center justify-content-center py-5 container col-10">
             <div class="text-center">
                 <p class="fs-3"> <span class="text-danger">Dikkat!</span> Sertifika Bulunamadı.</p>
                 <p class="lead">
-                    Lütfen mail adresini kontrol ederek tekrar deneyiniz.
+                    Lütfen mail adresini veya sertifika kodunu kontrol ederek tekrar deneyiniz.
                 </p>
             </div>
         </div>
