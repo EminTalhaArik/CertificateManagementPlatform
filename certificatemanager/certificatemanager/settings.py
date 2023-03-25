@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = getenv("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = getenv("DEBUG", False)
+DEBUG = getenv("DEBUG", True)
 
 ALLOWED_HOSTS = [
     getenv("APP_HOST"),
@@ -97,15 +97,16 @@ if IS_DEV:
 
 else:
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('DB_NAME'),
-        'USER': getenv('DB_USERNAME'),
-        'PASSWORD': getenv('DB_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
+            'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': getenv('DB_NAME'),
+            'USER': getenv('DB_USERNAME'),
+            'PASSWORD': getenv('DB_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
     }
-}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

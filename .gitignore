@@ -1,3 +1,4 @@
 notes.txt
 *.sqlite3
 .env
+.devnotes
