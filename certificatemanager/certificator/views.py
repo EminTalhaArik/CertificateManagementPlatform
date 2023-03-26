@@ -58,10 +58,10 @@ def generate_certificate(request):
 
     event = Event.objects.get(event_name=event_search)
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(make_certificates(str(event.certificate_file), participant_name, code))
+    #loop = asyncio.get_event_loop()
+    #loop.run_until_complete(make_certificates(str(event.certificate_file), participant_name, code))
 
-    #asyncio.run(make_certificates(str(event.certificate_file), participant_name, code))
+    asyncio.run(make_certificates(str(event.certificate_file), participant_name, code))
 
     print("certificates done.")
 
@@ -69,37 +69,35 @@ def generate_certificate(request):
     return FileResponse(image_data)
 
 
-NAME_FONT_FILE = ImageFont.truetype(r'static/font/GreatVibes-Regular.ttf', 180)
-CODE_FONT_FILE = ImageFont.truetype(r'static/font/Roboto-LightItalic.ttf', 30)
+CODE_FONT_FILE = ImageFont.truetype(r'static/font/Roboto-LightItalic.ttf', 15)
 FONT_COLOR = "#000000"
 
 async def make_certificates(event, name, code):
+
+    fontsize = 160
+    font = ImageFont.truetype(r'static/font/GreatVibes-Regular.ttf', fontsize)
 
     image_source = Image.open(r'media/'+event)
     WIDTH, HEIGHT = image_source.size
     draw = ImageDraw.Draw(image_source)
 
-    letters = string.ascii_uppercase
-    random_code = ''.join(random.choice(letters) for i in range(7))
+    code = "Sertifika Kodu: TBK2023-" + code
 
-    code = "Sertifika Kodu: " + random_code + "-" + code
-
-    default_name = name
-    if name.__len__() > 25 and len(name.split()) > 1:
-        new_name = name.split()
-        name = new_name[0] + " " + new_name[new_name.__len__() -1]
+    if name.__len__() > 25:
+        fontsize = 140
+        font = ImageFont.truetype(r'static/font/GreatVibes-Regular.ttf', fontsize)
 
 
     # Finding the width and height of the text. 
-    name_width, name_height = draw.textsize(name, font=NAME_FONT_FILE)
+    name_width, name_height = draw.textsize(name, font=font)
     code_width, code_height = draw.textsize(code, CODE_FONT_FILE)
 
     # Placing it in the center, then making some adjustments.
-    draw.text(((WIDTH - name_width) / 2, (HEIGHT - name_height) / 2 - 30), name, fill=FONT_COLOR, font=NAME_FONT_FILE)
+    draw.text(((WIDTH - name_width) / 2, (HEIGHT - name_height) / 2 - 30), name, fill=FONT_COLOR, font=font)
     draw.text(((WIDTH - code_width) / 1.05, (HEIGHT - code_height) / 1.05), code, fill=FONT_COLOR, font=CODE_FONT_FILE)
 
     # Saving the certificates in a different directory.
-    image_source.save("media/out/"+str(str(default_name).encode('utf-8'))+".png")
-    print('Saving Certificate of:', str(str(default_name).encode('utf-8')))
+    image_source.save("media/out/"+str(str(name).encode('utf-8'))+".png")
+    print('Saving Certificate of:', str(str(name).encode('utf-8')))
 
 #endregion
