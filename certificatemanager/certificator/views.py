@@ -1,12 +1,21 @@
+import types
+import sys
 import asyncio
 import string
 import random
+from os import path
 
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
 
 from .models import EventType, Event, Certificate
 from PIL import Image, ImageFont, ImageDraw
+
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rest.settings')
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+django.setup()
 
 
 def main(request):
@@ -25,11 +34,11 @@ def main(request):
             }
 
             return render(request, 'certificator/certificate.html', context)
-        
+
         elif '-' in search:
             code = search.split('-')[1]
             certificates = Certificate.objects.filter(id=code)
-            
+
             context = {
                 "certificates": certificates
             }
@@ -49,55 +58,72 @@ def main(request):
         return render(request, 'certificator/index.html', context)
 
 
-#region Certificate Generator
+# region Certificate Generator
 
-def generate_certificate(request):    
-    event_search = request.GET.get('event')
-    participant_name = request.GET.get('participant')
-    code = request.GET.get('code')
+def generate_certificate(request):
+    certificate_code = request.GET.get('code')
 
-    event = Event.objects.get(event_name=event_search)
+    if path.exists("media/out/"+str(certificate_code)+".png"):
+        image_data = open(
+            "media/out/"+str(certificate_code)+".png", "rb")
+        return FileResponse(image_data)
 
-    #loop = asyncio.get_event_loop()
-    #loop.run_until_complete(make_certificates(str(event.certificate_file), participant_name, code))
+    else:
+        certificate = Certificate.objects.get(pk=certificate_code)
 
-    asyncio.run(make_certificates(str(event.certificate_file), participant_name, code))
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(make_certificates(certificate))
+        finally:
+            loop.close()
+            asyncio.set_event_loop(None)
 
-    print("certificates done.")
-
-    image_data = open("media/out/"+str(str(participant_name).encode('utf-8'))+".png", "rb")
-    return FileResponse(image_data)
+        image_data = open(
+            "media/out/"+str(certificate_code)+".png", "rb")
+        return FileResponse(image_data)
 
 
 CODE_FONT_FILE = ImageFont.truetype(r'static/font/Roboto-LightItalic.ttf', 15)
+BIG_FONTSIZE = 160
+SMALL_FONTSIZE = 140
+BIG_TEXT_FONT = ImageFont.truetype(
+    r'static/font/GreatVibes-Regular.ttf', BIG_FONTSIZE)
+SMALL_TEXT_FONT = ImageFont.truetype(
+    r'static/font/GreatVibes-Regular.ttf', SMALL_FONTSIZE)
 FONT_COLOR = "#000000"
 
-async def make_certificates(event, name, code):
 
-    fontsize = 160
-    font = ImageFont.truetype(r'static/font/GreatVibes-Regular.ttf', fontsize)
+async def make_certificates(certificate):
 
-    image_source = Image.open(r'media/'+event)
+    participant_name = certificate.participant_name
+    certificate_code = certificate.id
+    certificate_file = certificate.event.certificate_file
+
+    image_source = Image.open(
+        r'media/'+str(certificate_file))
     WIDTH, HEIGHT = image_source.size
     draw = ImageDraw.Draw(image_source)
 
-    code = "Sertifika Kodu: TBK2023-" + code
+    code = "Certificate Code: TKB2023-" + str(certificate_code)
 
-    if name.__len__() > 25:
-        fontsize = 140
-        font = ImageFont.truetype(r'static/font/GreatVibes-Regular.ttf', fontsize)
+    if participant_name.__len__() > 25:
+        font = SMALL_TEXT_FONT
+    else:
+        font = BIG_TEXT_FONT
 
+    name_width, name_height = draw.textsize(
+        participant_name, font=font)
+    code_width, code_height = draw.textsize(
+        str(certificate_code), CODE_FONT_FILE)
 
-    # Finding the width and height of the text. 
-    name_width, name_height = draw.textsize(name, font=font)
-    code_width, code_height = draw.textsize(code, CODE_FONT_FILE)
+    draw.text(((WIDTH - name_width) / 2, (HEIGHT - name_height) /
+              2 - 30), participant_name, fill=FONT_COLOR, font=font)
+    draw.text(((WIDTH - code_width) / 1.05, (HEIGHT - code_height) /
+              1.05), code, fill=FONT_COLOR, font=CODE_FONT_FILE)
 
-    # Placing it in the center, then making some adjustments.
-    draw.text(((WIDTH - name_width) / 2, (HEIGHT - name_height) / 2 - 30), name, fill=FONT_COLOR, font=font)
-    draw.text(((WIDTH - code_width) / 1.05, (HEIGHT - code_height) / 1.05), code, fill=FONT_COLOR, font=CODE_FONT_FILE)
+    image_source.save("media/out/"+str(certificate_code)+".png")
+    print('Saving Certificate of:', str(
+        str(participant_name).encode('utf-8')))
 
-    # Saving the certificates in a different directory.
-    image_source.save("media/out/"+str(str(name).encode('utf-8'))+".png")
-    print('Saving Certificate of:', str(str(name).encode('utf-8')))
-
-#endregion
+# endregion
