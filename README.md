@@ -1,7 +1,7 @@
 
 # Certificate Management Platform - Ekatılımcı
 
-This project was developed for the Teens In Innovation organization, it aims to make it easy for past event attendees to view their attendance status.
+This project was developed for the event organizations, it aims to make it easy for past event attendees to view their attendance status.
 
 
 ## Features
