@@ -1,15 +1,15 @@
 <div class="container col-10 bg-white border py-4 rounded mb-4 mt-4 table-responsive">
 
-    <h3 class="text-center">Katılınan Etkinlikler</h3>
+    <h3 class="text-center">Katılım Belgeleri</h3>
     <hr>
 
     <table class="table table-hover text-center">
         <thead>
           <tr>
             <th scope="col">İsim - Soyisim</th>
-            <th scope="col">Etkinlik Adı</th>
-            <th scope="col">Etkinlik Tarihi</th>
-            <th scope="col">Etkinlik Türü</th>
+            <th scope="col">Program Adı</th>
+            <th scope="col">Tarih</th>
+            <th scope="col">Tür</th>
             <th scope="col">Paylaş</th>
             <th scope="col">Görüntüle</th>
           </tr>
@@ -22,15 +22,15 @@
                     <td>{{ certificate.event.event_date }}</td>
                     <td>{{ certificate.event.event_type.title }}</td>
                     <td>
-                      <a target="_blank" href="https://linkedin.com/share?text={{certificate.event.event_date}} tarihlerinde Teens In Innovation tarafından düzenlenen {{certificate.event.event_name}} etkinliğine katılım sağladığımı duyurmaktan mutluluk duyuyorum. Teşekkürler.">
-                        <span class="material-symbols-outlined">
+                      <a target="_blank" href="https://linkedin.com/share?text=Teens In Innovation tarafından düzenlenen {{certificate.event.event_name}} programına katılım sağladığımı duyurmaktan mutluluk duyuyorum. Katılım Belgemi görüntülemek için: https://ekatilimci.teinn.org/katilim-belgesi/{{certificate.id}}">
+                        <span class="material-symbols-outlined" style="color: #ffaa00;">
                           share
                           </span>
                       </a>
                     </td>
                     <td>
-                      <a target="_blank" href="/certificate?code={{certificate.id}}">
-                        <span class="material-symbols-outlined">
+                      <a target="_blank" href="/katilim-belgesi/{{certificate.id}}">
+                        <span class="material-symbols-outlined" style="color: #ffaa00;">
                           description
                           </span>
                       </a>

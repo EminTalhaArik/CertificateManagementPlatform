@@ -8,5 +8,5 @@ admin.site.site_title = 'E-Katılımcı'
 
 urlpatterns = [
     path('', view=views.main, name='index'),
-    path('certificate', view=views.generate_certificate, name='certificate')
+    path('katilim-belgesi/<int:code>', view=views.generate_certificate, name='katilim-belgesi')
 ]

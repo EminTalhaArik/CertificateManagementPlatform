@@ -60,8 +60,8 @@ def main(request):
 
 # region Certificate Generator
 
-def generate_certificate(request):
-    certificate_code = request.GET.get('code')
+def generate_certificate(request, code):
+    certificate_code = code
 
     if path.exists("media/out/"+str(certificate_code)+".png"):
         image_data = open(
@@ -105,7 +105,7 @@ async def make_certificates(certificate):
     WIDTH, HEIGHT = image_source.size
     draw = ImageDraw.Draw(image_source)
 
-    code = "Certificate Code: TKB2023-" + str(certificate_code)
+    code = "Belge Kodu: TKB2023-" + str(certificate_code)
 
     if participant_name.__len__() > 25:
         font = SMALL_TEXT_FONT
@@ -119,7 +119,7 @@ async def make_certificates(certificate):
 
     draw.text(((WIDTH - name_width) / 2, (HEIGHT - name_height) /
               2 - 30), participant_name, fill=FONT_COLOR, font=font)
-    draw.text(((WIDTH - code_width) / 1.05, (HEIGHT - code_height) /
+    draw.text(((WIDTH - code_width) / 1.18, (HEIGHT - code_height) /
               1.05), code, fill=FONT_COLOR, font=CODE_FONT_FILE)
 
     image_source.save("media/out/"+str(certificate_code)+".png")
