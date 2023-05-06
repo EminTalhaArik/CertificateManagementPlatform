@@ -9,6 +9,7 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('id','event_name','event_date')
 
 class CertificateAdmin(ImportExportModelAdmin):
+    search_fields = ('participant_name',)
     list_display = ('id', 'participant_name', 'participant_mail')
     resource_class = CertificateResource      
  
